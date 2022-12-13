@@ -6,8 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import type {Node} from 'react';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -17,6 +16,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 
 import {
   Colors,
@@ -28,7 +28,7 @@ import {
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
-const Section = ({children, title}): Node => {
+const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -54,7 +54,13 @@ const Section = ({children, title}): Node => {
   );
 };
 
-const App: () => Node = () => {
+const App = () => {
+  useEffect(() => {
+    messaging().getToken().then(token => {
+      console.log(token);
+    });
+  }, []);
+
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
