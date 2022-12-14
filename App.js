@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -15,8 +15,11 @@ import {
   Text,
   useColorScheme,
   View,
+  NativeModules,
+  PermissionsAndroid,
 } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
+import Mybutton from './Mybutton';
 
 import {
   Colors,
@@ -25,6 +28,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+var DirectSms = NativeModules.DirectSms;
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
@@ -55,11 +59,46 @@ const Section = ({children, title}) => {
 };
 
 const App = () => {
+  newUserToken = async () => {
+    const token = await messaging().getToken();
+    console.log(token);
+  };
+
   useEffect(() => {
-    messaging().getToken().then(token => {
-      console.log(token);
-    });
+    // setTimeout(() => {
+    //   // Share.shareSingle(shareOptions)
+    //   //   .then((res) => { console.log(res) })
+    //   //   .catch((err) => { err && console.log(err); });
+    //   DirectSms.sendDirectSms('+918015665499', 'This is a direct message');
+    // }, 1000);
   }, []);
+  sendSms = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.SEND_SMS,
+        {
+          title: 'Tadiwanashe App Sms Permission',
+          message:
+            'Tadiwanashe App needs access to your inbox ' +
+            'so you can send messages in background.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        // DirectSms.sendDirectSms(
+        //   '+918015665499',
+        //   'This is a direct message from your app.',
+        // );
+        console.log('SMS send ');
+      } else {
+        console.log('SMS permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -77,25 +116,11 @@ const App = () => {
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
         <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
+        <Mybutton
+          title="Generate user token"
+          customClick={() => this.newUserToken()}
+        />
+        <Mybutton title="Send SMS" customClick={() => this.sendSms()} />
       </ScrollView>
     </SafeAreaView>
   );
