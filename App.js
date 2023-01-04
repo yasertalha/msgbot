@@ -159,10 +159,6 @@ const App = () => {
         <Header />
         {userInfo ? (
           <>
-            <Mybutton
-              title="Generate user token"
-              customClick={() => this.newUserToken()}
-            />
             <Mybutton title="Send SMS" customClick={() => this.sendSms()} />
             <Mybutton title="Send WHATS" customClick={() => this.sendWhats()} />
           </>
