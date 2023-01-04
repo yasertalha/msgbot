@@ -41,14 +41,7 @@ const App = () => {
   const [userInfo, setUserInfo] = useState();
   newUserToken = async () => {
     const token = await messaging().getToken();
-    const preToken = await AsyncStorage.getItem('storage_Key');
-    if (token == preToken) {
-      console.log(preToken);
-      return Alert.alert('same token ' + preToken);
-    }
-    await AsyncStorage.setItem('storage_Key', token);
-    console.log(token);
-    Alert.alert('new token ' + token);
+    return token;
   };
 
   useEffect(() => {
@@ -125,7 +118,7 @@ const App = () => {
         body: {
           email: data.user.email,
           name: data.user.name,
-          token: refreshedToken,
+          token: newUserToken(),
         },
       })
         .then(res => {
