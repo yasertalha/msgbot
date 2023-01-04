@@ -1,0 +1,1 @@
+#get sha1 from this project to add in firebase = https://stackoverflow.com/questions/51845559/generate-sha-1-for-flutter-react-native-android-native-app#:~:text=cd%20android%0A.-,/gradlew%20signingReport,-Share

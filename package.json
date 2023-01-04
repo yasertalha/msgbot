@@ -10,10 +10,15 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-firebase/app": "^16.4.6",
     "@react-native-firebase/messaging": "^16.4.6",
+    "@react-native-google-signin/google-signin": "^9.0.2",
     "react": "18.1.0",
-    "react-native": "0.70.6"
+    "react-native": "0.70.6",
+    "react-native-config": "^1.4.11",
+    "react-native-dotenv": "^3.4.6",
+    "react-native-share": "^8.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
