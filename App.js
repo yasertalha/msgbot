@@ -35,23 +35,18 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import Config from 'react-native-config';
 var DirectSms = NativeModules.DirectSms;
 
 const App = () => {
   const [userInfo, setUserInfo] = useState();
   newUserToken = async () => {
     const token = await messaging().getToken();
-    const preToken = await AsyncStorage.getItem('storage_Key');
-    if (token == preToken) {
-      console.log(preToken);
-      return Alert.alert('same token ' + preToken);
-    }
-    await AsyncStorage.setItem('storage_Key', token);
-    console.log(token);
-    Alert.alert('new token ' + token);
+    return token;
   };
 
   useEffect(() => {
+    console.log('BASE_URL', Config.BASE_URL);
     // setTimeout(() => {
     //   // Share.shareSingle(shareOptions)
     //   //   .then((res) => { console.log(res) })
@@ -125,7 +120,7 @@ const App = () => {
         body: {
           email: data.user.email,
           name: data.user.name,
-          token: refreshedToken,
+          token: newUserToken(),
         },
       })
         .then(res => {
