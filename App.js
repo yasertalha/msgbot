@@ -111,20 +111,25 @@ const App = () => {
       const data = await GoogleSignin.signIn();
       await AsyncStorage.setItem('userInfo', JSON.stringify(data));
       setUserInfo(data);
+      console.log('sign In data : ', data);
+      const newToken = await this.newUserToken();
+      console.log('newToken : ', newToken);
       // signUp update DB - start
       await fetch(`${baseUrl}/user/signUp`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: {
+        body: JSON.stringify({
           email: data.user.email,
           name: data.user.name,
-          token: newUserToken(),
-        },
+          token: newToken,
+        }),
       })
         .then(res => {
-          console.log(res);
+          console.log(`${baseUrl} **** safe *******`);
+          console.log(res.json());
         })
         .catch(err => {
+          console.log(`${baseUrl} ****** err ********`);
           err && console.log(err);
         });
       // signUp update DB - end

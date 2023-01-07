@@ -17,6 +17,7 @@ messaging().onTokenRefresh(() => {
     .then(async refreshedToken => {
       const userInfo = await AsyncStorage.getItem('userInfo');
       console.log(userInfo);
+      if (!userInfo) return;
       //update token of exsisting user to DB - start
       await fetch(`${baseUrl}/user/updateToken`, {
         method: 'POST',
