@@ -114,8 +114,8 @@ const App = () => {
       console.log('sign In data : ', data);
       const newToken = await this.newUserToken();
       console.log('newToken : ', newToken);
-      // signUp update DB - start
-      await fetch(`${baseUrl}/user/signUp`, {
+      // signIn update DB - start
+      await fetch(`${baseUrl}/user/signIn`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -132,7 +132,7 @@ const App = () => {
           console.log(`${baseUrl} ****** err ********`);
           err && console.log(err);
         });
-      // signUp update DB - end
+      // signIn update DB - end
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log(error.code);
