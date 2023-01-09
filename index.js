@@ -43,17 +43,17 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log(remoteMessage);
   const {message, phone} = remoteMessage.data;
   if (message && phone) {
-    // DirectSms.sendDirectSms(phone, message);
+    DirectSms.sendDirectSms(phone, message);
     // myShare({
     //   message: 'HI',
     //   social: NativeModules.RNShare.WHATSAPP || 'whatsapp',
     //   whatsAppNumber: '8015665499', // country code + phone number
     // });
-    myShare({
-      message: 'HI',
-      social: 'whatsapp',
-      whatsAppNumber: '8015665499', // country code + phone number
-    });
+    // myShare({
+    //   message: 'HI',
+    //   social: 'whatsapp',
+    //   whatsAppNumber: '8015665499', // country code + phone number
+    // });
     console.log(message);
     console.log(phone);
   }

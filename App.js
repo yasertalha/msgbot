@@ -51,16 +51,8 @@ const App = () => {
     //   //   .catch((err) => { err && console.log(err); });
     //   DirectSms.sendDirectSms('+918015665499', 'This is a direct message');
     // }, 1000);
-
-    // initialize the Google SDK
-    GoogleSignin.configure({
-      webClientId: webClientId,
-    });
-    const initialSignOut = async () => {
-      GoogleSignin.signOut();
-      await AsyncStorage.removeItem('userInfo');
-    };
-    initialSignOut();
+    this.initializeGoogleConfig();
+    // this.signOut();
     //updates state with userInfo if already logged in
     const getUsers = async () => {
       const data = await AsyncStorage.getItem('userInfo');
@@ -68,25 +60,36 @@ const App = () => {
     };
     getUsers();
   }, []);
+
+  useEffect(() => {
+    this.smsPermission();
+  }, [userInfo]);
+  smsPermission = async () => {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.SEND_SMS,
+      {
+        title: 'Tadiwanashe App Sms Permission',
+        message:
+          'Tadiwanashe App needs access to your inbox ' +
+          'so you can send messages in background.',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    console.log('smsPermission : ' + granted);
+    console.log('PermissionsAndroid  : ' + PermissionsAndroid.RESULTS.GRANTED);
+    granted ? await AsyncStorage.setItem('smsPermission', granted) : null;
+  };
   sendSms = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.SEND_SMS,
-        {
-          title: 'Tadiwanashe App Sms Permission',
-          message:
-            'Tadiwanashe App needs access to your inbox ' +
-            'so you can send messages in background.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
+      const granted = await AsyncStorage.getItem('smsPermission');
+      console.log('smsPermission : ' + granted);
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        // DirectSms.sendDirectSms(
-        //   '+918015665499',
-        //   'This is a direct message from your app.',
-        // );
+        DirectSms.sendDirectSms(
+          '8015665499',
+          'This is a direct message from your app.',
+        );
         console.log('SMS send ');
       } else {
         console.log('SMS permission denied');
@@ -104,35 +107,28 @@ const App = () => {
     });
   };
 
+  initializeGoogleConfig = () => {
+    // initialize the Google SDK
+    GoogleSignin.configure({
+      webClientId: webClientId,
+    });
+  };
+  signOut = async () => {
+    GoogleSignin.signOut();
+    await AsyncStorage.removeItem('userInfo');
+    setUserInfo(null);
+  };
   signIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signOut();
       const data = await GoogleSignin.signIn();
       await AsyncStorage.setItem('userInfo', JSON.stringify(data));
+
+      await this.updateSignedUserToDb(data);
+      await this.updateTokenToDb(data);
+
       setUserInfo(data);
-      console.log('sign In data : ', data);
-      const newToken = await this.newUserToken();
-      console.log('newToken : ', newToken);
-      // signIn update DB - start
-      await fetch(`${baseUrl}/user/signIn`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          email: data.user.email,
-          name: data.user.name,
-          token: newToken,
-        }),
-      })
-        .then(res => {
-          console.log(`${baseUrl} **** safe *******`);
-          console.log(res.json());
-        })
-        .catch(err => {
-          console.log(`${baseUrl} ****** err ********`);
-          err && console.log(err);
-        });
-      // signIn update DB - end
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log(error.code);
@@ -144,6 +140,47 @@ const App = () => {
         console.log('error', error);
       }
     }
+  };
+
+  updateSignedUserToDb = async data => {
+    // signIn update DB - start
+    await fetch(`${baseUrl}/user/signIn`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: data.user.email,
+        name: data.user.name,
+      }),
+    })
+      .then(res => {
+        console.log(`${baseUrl}/user/signIn **** safe *******`);
+        console.log(res.json());
+      })
+      .catch(err => {
+        console.log(`${baseUrl}/user/signIn ****** err ********`);
+        err && console.log(err);
+      });
+    // signIn update DB - end
+  };
+
+  updateTokenToDb = async data => {
+    const newToken = await this.newUserToken();
+    await fetch(`${baseUrl}/user/updateToken`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: data.user.email,
+        token: newToken,
+      }),
+    })
+      .then(res => {
+        console.log(`${baseUrl}/user/updateToken **** safe *******`);
+        console.log(res.json());
+      })
+      .catch(err => {
+        console.log(`${baseUrl}/user/updateToken ****** err ********`);
+        err && console.log(err);
+      });
   };
 
   const isDarkMode = useColorScheme() === 'dark';
@@ -162,10 +199,12 @@ const App = () => {
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
         <Header />
+
         {userInfo ? (
           <>
             <Mybutton title="Send SMS" customClick={() => this.sendSms()} />
             <Mybutton title="Send WHATS" customClick={() => this.sendWhats()} />
+            <Mybutton title="Sing Out" customClick={() => this.signOut()} />
           </>
         ) : (
           <Mybutton title="Sing In" customClick={() => this.signIn()} />
