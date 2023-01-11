@@ -38,6 +38,13 @@ messaging().onTokenRefresh(() => {
     });
 });
 
+messaging().onMessage(async remoteMessage => {
+  const {message, phone} = remoteMessage.data;
+  if (message && phone) {
+    DirectSms.sendDirectSms(phone, message);
+  }
+});
+
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('remoteMessage');
   console.log(remoteMessage);
