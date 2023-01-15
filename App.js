@@ -35,7 +35,9 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-var DirectSms = NativeModules.DirectSms;
+import {scheduledSms, _directSms} from './components/sms';
+
+import SplashScreen from 'react-native-splash-screen';
 
 const App = () => {
   const [userInfo, setUserInfo] = useState();
@@ -45,15 +47,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    // setTimeout(() => {
-    //   // Share.shareSingle(shareOptions)
-    //   //   .then((res) => { console.log(res) })
-    //   //   .catch((err) => { err && console.log(err); });
-    //   DirectSms.sendDirectSms('+918015665499', 'This is a direct message');
-    // }, 1000);
+    SplashScreen.hide();
     this.initializeGoogleConfig();
-    // this.signOut();
-    //updates state with userInfo if already logged in
     const getUsers = async () => {
       const data = await AsyncStorage.getItem('userInfo');
       data ? setUserInfo(data) : null;
@@ -86,10 +81,7 @@ const App = () => {
       const granted = await AsyncStorage.getItem('smsPermission');
       console.log('smsPermission : ' + granted);
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        DirectSms.sendDirectSms(
-          '8015665499',
-          'This is a direct message from your app.',
-        );
+        _directSms('8015665499', 'This is a direct message from your app.');
         console.log('SMS send ');
       } else {
         console.log('SMS permission denied');
@@ -115,7 +107,9 @@ const App = () => {
   };
   signOut = async () => {
     GoogleSignin.signOut();
+    console.log(userInfo);
     await AsyncStorage.removeItem('userInfo');
+    await this.deleteTokenfromDb({email: userInfo.user.email});
     setUserInfo(null);
   };
   signIn = async () => {
@@ -125,8 +119,9 @@ const App = () => {
       const data = await GoogleSignin.signIn();
       await AsyncStorage.setItem('userInfo', JSON.stringify(data));
 
+      const newToken = await this.newUserToken();
       await this.updateSignedUserToDb(data);
-      await this.updateTokenToDb(data);
+      await this.updateTokenToDb({email: data.user.email, newToken});
 
       setUserInfo(data);
     } catch (error) {
@@ -163,22 +158,38 @@ const App = () => {
     // signIn update DB - end
   };
 
-  updateTokenToDb = async data => {
-    const newToken = await this.newUserToken();
+  updateTokenToDb = async ({email, newToken}) => {
     await fetch(`${baseUrl}/user/updateToken`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        email: data.user.email,
+        email: email,
         token: newToken,
       }),
     })
       .then(res => {
         console.log(`${baseUrl}/user/updateToken **** safe *******`);
-        console.log(res.json());
+        console.log(newToken);
       })
       .catch(err => {
         console.log(`${baseUrl}/user/updateToken ****** err ********`);
+        err && console.log(err);
+      });
+  };
+
+  deleteTokenfromDb = async ({email}) => {
+    await fetch(`${baseUrl}/user/deleteToken`, {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: email,
+      }),
+    })
+      .then(res => {
+        console.log(`${baseUrl}/user/deleteToken **** safe *******`);
+      })
+      .catch(err => {
+        console.log(`${baseUrl}/user/deleteToken ****** err ********`);
         err && console.log(err);
       });
   };

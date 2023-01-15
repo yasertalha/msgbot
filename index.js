@@ -2,14 +2,14 @@
  * @format
  */
 
-import {AppRegistry, NativeModules} from 'react-native';
+import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
 import {myShare} from './myShare';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {baseUrl} from './config';
-var DirectSms = NativeModules.DirectSms;
+import {scheduledSms, _directSms} from './components/sms';
 
 messaging().onTokenRefresh(() => {
   messaging()
@@ -39,31 +39,15 @@ messaging().onTokenRefresh(() => {
 });
 
 messaging().onMessage(async remoteMessage => {
-  const {message, phone} = remoteMessage.data;
-  if (message && phone) {
-    DirectSms.sendDirectSms(phone, message);
-  }
+  const {message, phone, scheduledAt} = remoteMessage.data;
+  if (scheduledAt) return scheduledSms(message, phone, scheduledAt);
+  if (message && phone) return _directSms(phone, message);
 });
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('remoteMessage');
-  console.log(remoteMessage);
-  const {message, phone} = remoteMessage.data;
-  if (message && phone) {
-    DirectSms.sendDirectSms(phone, message);
-    // myShare({
-    //   message: 'HI',
-    //   social: NativeModules.RNShare.WHATSAPP || 'whatsapp',
-    //   whatsAppNumber: '8015665499', // country code + phone number
-    // });
-    // myShare({
-    //   message: 'HI',
-    //   social: 'whatsapp',
-    //   whatsAppNumber: '8015665499', // country code + phone number
-    // });
-    console.log(message);
-    console.log(phone);
-  }
+  const {message, phone, scheduledAt} = remoteMessage.data;
+  if (scheduledAt) return scheduledSms(message, phone, scheduledAt);
+  if (message && phone) return _directSms(phone, message);
 });
 
 function HeadlessCheck({isHeadless}) {
