@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useLayoutEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -17,12 +17,14 @@ import {
   View,
   NativeModules,
   PermissionsAndroid,
-  Alert,
 } from 'react-native';
+import {Loading} from './components/loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import Mybutton from './Mybutton';
 import {myShare} from './myShare';
+import Login from './login';
+import LandingScrn from './LandingScrn';
 import {
   GoogleSignin,
   statusCodes,
@@ -41,17 +43,21 @@ import SplashScreen from 'react-native-splash-screen';
 
 const App = () => {
   const [userInfo, setUserInfo] = useState();
+  const [loading, setLoading] = useState();
+
   newUserToken = async () => {
     const token = await messaging().getToken();
     return token;
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     SplashScreen.hide();
     this.initializeGoogleConfig();
     const getUsers = async () => {
       const data = await AsyncStorage.getItem('userInfo');
-      data ? setUserInfo(data) : null;
+      const getDataParsed = JSON.parse(data);
+      console.log(data);
+      data ? setUserInfo(getDataParsed) : null;
     };
     getUsers();
   }, []);
@@ -106,14 +112,16 @@ const App = () => {
     });
   };
   signOut = async () => {
-    GoogleSignin.signOut();
-    console.log(userInfo);
-    await AsyncStorage.removeItem('userInfo');
+    setLoading(true);
     await this.deleteTokenfromDb({email: userInfo.user.email});
     setUserInfo(null);
+    await GoogleSignin.signOut();
+    await AsyncStorage.removeItem('userInfo');
+    setLoading(false);
   };
   signIn = async () => {
     try {
+      setLoading(true);
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signOut();
       const data = await GoogleSignin.signIn();
@@ -124,6 +132,7 @@ const App = () => {
       await this.updateTokenToDb({email: data.user.email, newToken});
 
       setUserInfo(data);
+      setLoading(false);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log(error.code);
@@ -178,6 +187,7 @@ const App = () => {
   };
 
   deleteTokenfromDb = async ({email}) => {
+    console.log('deleteTokenfromDb of ', email);
     await fetch(`${baseUrl}/user/deleteToken`, {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
@@ -198,6 +208,7 @@ const App = () => {
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    height: '100%',
   };
 
   return (
@@ -209,17 +220,15 @@ const App = () => {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
-
-        {userInfo ? (
+        {console.log('*******', userInfo)}
+        {userInfo?.user?.email ? (
           <>
-            <Mybutton title="Send SMS" customClick={() => this.sendSms()} />
-            <Mybutton title="Send WHATS" customClick={() => this.sendWhats()} />
-            <Mybutton title="Sing Out" customClick={() => this.signOut()} />
+            <LandingScrn signOut={this.signOut} userInfo={userInfo} />
           </>
         ) : (
-          <Mybutton title="Sing In" customClick={() => this.signIn()} />
+          <Login signIn={this.signIn} />
         )}
+        {loading && <Loading />}
       </ScrollView>
     </SafeAreaView>
   );
