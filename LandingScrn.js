@@ -37,7 +37,6 @@ const Login = props => {
           display: 'flex',
           alignItems: 'center',
           width: deviceWidth,
-          height: deviceHeight,
           margin: 10,
           marginTop: 50,
           color: 'white',
@@ -80,7 +79,7 @@ const Login = props => {
             justifyContent: 'center',
             margin: 30,
           }}>
-          <Text style={{color: 'white', fontSize: 20}}>FAG</Text>
+          <Text style={{color: 'white', fontSize: 20}}>FAG 🤔</Text>
 
           <Text style={{color: 'white'}}>
             1. Should mobile app be maintained in open mode, while sending sms
@@ -104,7 +103,7 @@ const Login = props => {
             justifyContent: 'center',
             margin: 30,
           }}>
-          <Text style={{color: 'white', fontSize: 20}}>Relogin</Text>
+          <Text style={{color: 'white', fontSize: 20}}>Relogin 🔒</Text>
 
           <Text style={{color: 'white'}}>
             {'\n'}
@@ -113,6 +112,38 @@ const Login = props => {
             <Text style={{color: 'hotpink'}} onPress={relogin}>
               click here
             </Text>
+          </Text>
+        </View>
+
+        <View
+          style={{
+            width: '70%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: 30,
+          }}>
+          <Text style={{color: 'white', fontSize: 20}}>Developer 👑</Text>
+
+          <Text style={{color: 'white'}}>
+            {'\n'}
+            {'\n'}
+            <Pressable
+              onPress={() =>
+                Linking.openURL(
+                  'https://in.linkedin.com/in/syed-yaser-mohasin-197132174?trk=profile-badge',
+                )
+              }>
+              {({pressed}) => (
+                <Text
+                  style={{
+                    textDecorationLine: 'underline',
+                    color: pressed ? 'green' : 'hotpink',
+                  }}>
+                  click here
+                </Text>
+              )}
+            </Pressable>{' '}
+            to Know who made this possible ! {'\n'}
           </Text>
         </View>
       </View>

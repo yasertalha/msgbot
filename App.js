@@ -40,6 +40,7 @@ import {
 import {scheduledSms, _directSms} from './components/sms';
 
 import SplashScreen from 'react-native-splash-screen';
+import AbtDev from './components/abtDev';
 
 const App = () => {
   const [userInfo, setUserInfo] = useState();
@@ -51,6 +52,7 @@ const App = () => {
   };
 
   useLayoutEffect(() => {
+    setLoading(true);
     SplashScreen.hide();
     this.initializeGoogleConfig();
     const getUsers = async () => {
@@ -60,6 +62,7 @@ const App = () => {
       data ? setUserInfo(getDataParsed) : null;
     };
     getUsers();
+    setLoading(false);
   }, []);
 
   useEffect(() => {
