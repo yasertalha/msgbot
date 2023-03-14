@@ -17,6 +17,7 @@ import {
   View,
   NativeModules,
   PermissionsAndroid,
+  Alert,
 } from 'react-native';
 import {Loading} from './components/loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -135,7 +136,6 @@ const App = () => {
       await this.updateTokenToDb({email: data.user.email, newToken});
 
       setUserInfo(data);
-      setLoading(false);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log(error.code);
@@ -145,8 +145,20 @@ const App = () => {
         console.log(error.code);
       } else {
         console.log('error', error);
+        Alert.alert(
+          'Something went wrong',
+          'Check your network connection and try again',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+          ],
+        );
       }
     }
+    setLoading(false);
   };
 
   updateSignedUserToDb = async data => {
