@@ -7,6 +7,7 @@ import {
   Dimensions,
   ScrollView,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import Mybutton from './Mybutton';
 
@@ -56,6 +57,7 @@ const Login = props => {
             {'\n'}
             To start sending sms from web, Login to{'  '}
             <Pressable
+              hitSlop={{top: 20, bottom: 20, left: 50, right: 50}}
               onPress={() => Linking.openURL('https://websmsbot.netlify.app/')}>
               {({pressed}) => (
                 <Text
@@ -82,6 +84,8 @@ const Login = props => {
           <Text style={{color: 'white', fontSize: 20}}>FAG 🤔</Text>
 
           <Text style={{color: 'white'}}>
+            {'\n'}
+            {'\n'}
             1. Should mobile app be maintained in open mode, while sending sms
             from website ? {'\n'}
             {'\n'}
@@ -92,7 +96,14 @@ const Login = props => {
             2. Mobile data should be ON while sending sms from website ? {'\n'}
             {'\n'}
             Ans : 😃{'  '}Yes, mobile should have internet connection while
-            sending sms from website
+            sending sms from website{'\n'}
+          </Text>
+          <Text style={{color: 'white'}}>
+            3. What if Mobile does not have internet connection while sending
+            sms from web ? {'\n'}
+            {'\n'}
+            Ans : 😃{'  '}Sms will be send later once mobile gets active
+            internet connection.
           </Text>
         </View>
 
@@ -109,9 +120,11 @@ const Login = props => {
             {'\n'}
             {'\n'}
             ReLogin here with different email id ? {'\n'}
-            <Text style={{color: 'hotpink'}} onPress={relogin}>
-              click here
-            </Text>
+            <TouchableOpacity
+              onPress={relogin}
+              hitSlop={{top: 20, bottom: 20, left: 50, right: 50}}>
+              <Text style={{color: 'hotpink'}}>click here</Text>
+            </TouchableOpacity>
           </Text>
         </View>
 
@@ -127,22 +140,15 @@ const Login = props => {
           <Text style={{color: 'white'}}>
             {'\n'}
             {'\n'}
-            <Pressable
+            <TouchableOpacity
               onPress={() =>
                 Linking.openURL(
                   'https://in.linkedin.com/in/syed-yaser-mohasin-197132174?trk=profile-badge',
                 )
-              }>
-              {({pressed}) => (
-                <Text
-                  style={{
-                    textDecorationLine: 'underline',
-                    color: pressed ? 'green' : 'hotpink',
-                  }}>
-                  click here
-                </Text>
-              )}
-            </Pressable>{' '}
+              }
+              hitSlop={{top: 20, bottom: 20, left: 50, right: 50}}>
+              <Text style={{color: 'hotpink'}}>click here</Text>
+            </TouchableOpacity>{' '}
             to Know who made this possible ! {'\n'}
           </Text>
         </View>
