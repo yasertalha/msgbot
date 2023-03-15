@@ -15,7 +15,10 @@ const scheduledSms = (phone, message, scheduledAt) => {
 
 const _directSms = (phone, message) => {
   console.log(phone, message);
-  DirectSms.sendDirectSms(phone, message);
+  const phones = JSON.parse(phone);
+  phones.forEach(num => {
+    DirectSms.sendDirectSms(num, message);
+  });
 };
 
 export {scheduledSms, _directSms};
