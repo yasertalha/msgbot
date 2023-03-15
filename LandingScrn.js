@@ -65,7 +65,7 @@ const Login = props => {
                     textDecorationLine: 'underline',
                     color: pressed ? 'green' : 'hotpink',
                   }}>
-                  websmsbot
+                  web sms bot
                 </Text>
               )}
             </Pressable>
@@ -127,7 +127,7 @@ const Login = props => {
             </TouchableOpacity>
           </Text>
         </View>
-
+        {/* 
         <View
           style={{
             width: '70%',
@@ -151,7 +151,7 @@ const Login = props => {
             </TouchableOpacity>{' '}
             to Know who made this possible ! {'\n'}
           </Text>
-        </View>
+        </View> */}
       </View>
     </ScrollView>
   );
