@@ -1,4 +1,4 @@
-package com.msgbot.newarchitecture.components;
+package com.iconnect.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

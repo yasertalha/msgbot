@@ -1,4 +1,4 @@
-package com.msgbot.newarchitecture;
+package com.iconnect.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.msgbot.BuildConfig;
-import com.msgbot.newarchitecture.components.MainComponentsRegistry;
-import com.msgbot.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.iconnect.BuildConfig;
+import com.iconnect.newarchitecture.components.MainComponentsRegistry;
+import com.iconnect.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.msgbot;
+package com.iconnect;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,11 +1,11 @@
-package com.msgbot;
+package com.iconnect;
  
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.msgbot.DirectSmsModule;
+import com.iconnect.DirectSmsModule;
  
 import java.util.ArrayList;
 import java.util.Collections;

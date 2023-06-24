@@ -1,4 +1,4 @@
-package com.msgbot;
+package com.iconnect;
  
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
