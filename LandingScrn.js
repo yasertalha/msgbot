@@ -50,7 +50,7 @@ const Login = props => {
             margin: 30,
           }}>
           <Text style={{color: 'white', fontSize: 20}}>
-            Welcome to MOB SMS Bot{'  '} 🎉
+            Welcome to iconnect{'  '} 🎉
           </Text>
           <Text style={{color: 'white'}}>
             {'\n'}
