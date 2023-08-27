@@ -17,7 +17,7 @@ const Login = props => {
       }}>
       <Image
         style={{width: '100%', height: '75%'}}
-        source={require('./components/Asset/images/iconnect')}
+        source={require('./components/Asset/iconnect.png')}
       />
       <View style={{width: '100%', height: '25%'}}>
         <Mybutton title="Google   Sing In" customClick={() => props.signIn()} />
