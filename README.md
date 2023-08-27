@@ -1,4 +1,4 @@
-# iconnect
+# msgbot
 
 # Send message from React Native app using sms or other social networks
 
