@@ -81,7 +81,7 @@ const Login = props => {
             justifyContent: 'center',
             margin: 30,
           }}>
-          <Text style={{color: 'white', fontSize: 20}}>FAG 🤔</Text>
+          <Text style={{color: 'white', fontSize: 20}}>FAQ 🤔</Text>
 
           <Text style={{color: 'white'}}>
             {'\n'}
