@@ -9,7 +9,7 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import Mybutton from './Mybutton';
+import { websiteObj } from './config';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -18,7 +18,7 @@ const Login = props => {
   const relogin = () => {
     Alert.alert(
       'Relogin ?',
-      'On clicking OK you will be Logged out \n\nYou should Log In again to send sms from websmsbot.netlify.com',
+      `On clicking OK you will be Logged out \n\nYou should Log In again to send sms from ${websiteObj.link}`,
       [
         {
           text: 'Cancel',
@@ -58,14 +58,14 @@ const Login = props => {
             To start sending sms from web, Login to{'  '}
             <Pressable
               hitSlop={{top: 20, bottom: 20, left: 50, right: 50}}
-              onPress={() => Linking.openURL('https://websmsbot.netlify.app/')}>
+              onPress={() => Linking.openURL(websiteObj.link)}>
               {({pressed}) => (
                 <Text
                   style={{
                     textDecorationLine: 'underline',
                     color: pressed ? 'green' : 'hotpink',
                   }}>
-                  web sms bot
+                  {websiteObj.name}
                 </Text>
               )}
             </Pressable>
